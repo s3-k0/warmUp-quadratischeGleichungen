@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warm Up Quadratische Gleichungen</title>
+  <style>
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #102748;
+      --card: rgba(10, 22, 40, 0.84);
+      --line: rgba(255, 255, 255, 0.14);
+      --text: #eef6ff;
+      --muted: #b7cce8;
+      --accent: #7ee787;
+      --accent-2: #60a5fa;
+      --danger: #ff8f8f;
+      --warning: #ffd166;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(96, 165, 250, 0.25), transparent 32%),
+        radial-gradient(circle at 20% 25%, rgba(126, 231, 135, 0.12), transparent 22%),
+        linear-gradient(180deg, #0b1630 0%, #07111f 55%, #02060d 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 75% 15%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1.8px 1.8px at 60% 70%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2px 2px at 35% 80%, rgba(255,255,255,0.75), transparent),
+        radial-gradient(1.4px 1.4px at 85% 55%, rgba(255,255,255,0.7), transparent);
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin: 0 0 8px;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      max-width: 760px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 1.15fr) minmax(260px, 0.85fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .task-panel {
+      padding: 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 800;
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(126, 231, 135, 0.14);
+      color: #dcffe0;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .equation-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .equation-title {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .equation {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .hint-inline {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 1rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    input[type="text"] {
+      flex: 1 1 280px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 1.1rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.14);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(1px); }
+
+    .primary { background: linear-gradient(135deg, #7ee787, #22c55e); color: #06210d; }
+    .secondary { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid rgba(255,255,255,0.12); }
+    .ghost { background: rgba(96, 165, 250, 0.16); color: #dcecff; }
+
+    .top-actions button,
+    .button-row button {
+      min-height: 56px;
+      touch-action: manipulation;
+    }
+
+    .feedback {
+      min-height: 58px;
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      font-size: 1.04rem;
+      line-height: 1.5;
+    }
+
+    .feedback.success { border-color: rgba(126, 231, 135, 0.38); background: rgba(126, 231, 135, 0.12); }
+    .feedback.error { border-color: rgba(255, 143, 143, 0.35); background: rgba(255, 143, 143, 0.12); }
+    .feedback.info { border-color: rgba(255, 209, 102, 0.35); background: rgba(255, 209, 102, 0.1); }
+
+    .rocket-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      min-height: 680px;
+    }
+
+    .rocket-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .rocket-stage {
+      position: relative;
+      height: 520px;
+      margin-top: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(180deg, rgba(96, 165, 250, 0.12), rgba(5, 10, 24, 0.9));
+      overflow: hidden;
+    }
+
+    .rocket-stage::before,
+    .rocket-stage::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .rocket-stage::before { top: 25%; }
+    .rocket-stage::after { top: 60%; }
+
+    .zone-labels {
+      position: absolute;
+      inset: 16px 16px 16px auto;
+      width: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .zone-label {
+      align-self: flex-end;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(6, 16, 31, 0.7);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #dcecff;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .rocket {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      transition: bottom 0.6s ease;
+      width: 110px;
+      z-index: 3;
+      filter: drop-shadow(0 8px 30px rgba(255, 120, 60, 0.35));
+    }
+
+    .rocket-body {
+      position: relative;
+      width: 66px;
+      height: 146px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #f8fbff, #ccd9e8 75%, #8ca0b6 100%);
+      border-radius: 50px 50px 20px 20px;
+      border: 3px solid rgba(11, 22, 48, 0.45);
+    }
+
+    .rocket-body::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 24px solid transparent;
+      border-right: 24px solid transparent;
+      border-bottom: 34px solid #f8fbff;
+      filter: drop-shadow(0 -2px 0 rgba(11, 22, 48, 0.45));
+    }
+
+    .window {
+      position: absolute;
+      top: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #dff4ff, #60a5fa 70%, #183b78 100%);
+      border: 3px solid rgba(11, 22, 48, 0.5);
+    }
+
+    .wing {
+      position: absolute;
+      bottom: 18px;
+      width: 24px;
+      height: 44px;
+      background: #ff7b72;
+      border: 3px solid rgba(11, 22, 48, 0.4);
+    }
+
+    .wing.left { left: 12px; clip-path: polygon(100% 0, 0 100%, 100% 100%); }
+    .wing.right { right: 12px; clip-path: polygon(0 0, 0 100%, 100% 100%); }
+
+    .fire {
+      width: 28px;
+      height: 56px;
+      margin: -4px auto 0;
+      background: linear-gradient(180deg, #fff1a8 0%, #ff9f43 55%, #ff5e5b 100%);
+      clip-path: polygon(50% 100%, 0 0, 35% 20%, 50% 0, 65% 20%, 100% 0);
+      animation: flame 0.28s infinite alternate ease-in-out;
+      transform-origin: top center;
+    }
+
+    @keyframes flame {
+      from { transform: scaleY(0.92); }
+      to { transform: scaleY(1.08); }
+    }
+
+    .bonus {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(96, 165, 250, 0.14);
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      color: #eaf4ff;
+      font-weight: 700;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 6, 13, 0.7);
+      padding: 18px;
+      z-index: 30;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #f7fbff;
+      color: #10213d;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    .modal h2 { margin-top: 0; font-size: 2rem; }
+    .help-card {
+      background: #eef5ff;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid #d3e5ff;
+    }
+
+    .help-card h3 { margin: 0 0 8px; }
+    .help-card p { margin: 0; line-height: 1.6; }
+
+    .timer-ended {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1180px) {
+      .app {
+        width: min(100% - 28px, 980px);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .rocket-panel {
+        min-height: unset;
+      }
+
+      .rocket-stage {
+        height: 380px;
+      }
+
+      .zone-labels {
+        width: auto;
+        left: 16px;
+        right: 16px;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+      }
+
+      .zone-label {
+        align-self: auto;
+      }
+    }
+
+    @media (min-width: 700px) and (max-width: 1180px) {
+      .hero {
+        align-items: stretch;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .top-actions button {
+        flex: 1 1 0;
+      }
+
+      .task-panel,
+      .rocket-panel {
+        padding: 28px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .equation {
+        font-size: clamp(2.4rem, 5vw, 3.6rem);
+      }
+
+      .input-row,
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      input[type="text"] {
+        min-height: 68px;
+        font-size: 1.25rem;
+      }
+
+      .button-row button {
+        width: 100%;
+        font-size: 1.1rem;
+      }
+
+      .rocket-header {
+        margin-bottom: 18px;
+      }
+
+      .rocket-stage {
+        height: 420px;
+      }
+    }
+
+    @media (max-width: 930px) {
+      .hero {
+        flex-direction: column;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      .rocket-stage { height: 360px; }
+    }
+
+    @media (max-width: 640px) {
+      .app { width: min(100% - 20px, 100%); padding-top: 18px; }
+      .task-panel, .rocket-panel { padding: 18px; }
+      .equation { font-size: 2.2rem; }
+      .top-actions,
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      .top-actions button,
+      .button-row button,
+      input[type="text"] {
+        width: 100%;
+      }
+      .zone-labels {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div>
+        <h1>Warm Up: Quadratische Gleichungen</h1>
+        <p class="subtitle">Starte den 5-Minuten-Countdown, löse schnell passende Aufgaben und schicke die Rakete immer höher ins All.</p>
+      </div>
+      <div class="top-actions">
+        <button id="startButton" class="primary">Warm-up starten</button>
+        <button id="helpButton" class="secondary">Hilfe</button>
+      </div>
+    </section>
+
+    <main class="layout">
+      <section id="taskPanel" class="panel task-panel">
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-label">Zeit</span>
+            <span id="timerDisplay" class="stat-value">05:00</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Richtig</span>
+            <span id="correctDisplay" class="stat-value">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Serie</span>
+            <span id="streakDisplay" class="stat-value">0</span>
+          </div>
+        </div>
+
+        <div id="phaseBadge" class="phase-badge">🚀 Startphase</div>
+
+        <div class="equation-card">
+          <p class="equation-title">Aktuelle Aufgabe</p>
+          <p id="equationDisplay" class="equation">Klicke auf „Warm-up starten“.</p>
+        </div>
+
+        <p class="hint-inline">Gib eine oder zwei Lösungen ein, zum Beispiel <strong>2; -3</strong>. Die Reihenfolge ist egal.</p>
+
+        <div class="input-row">
+          <input id="solutionInput" type="text" autocomplete="off" placeholder="Lösung eingeben, z. B. 2; -3" />
+        </div>
+
+        <div class="button-row">
+          <button id="checkButton" class="primary">Prüfen</button>
+          <button id="nextButton" class="ghost">Nächste Aufgabe</button>
+          <button id="resetButton" class="secondary">Neu starten</button>
+        </div>
+
+        <div id="feedbackBox" class="feedback info">Bereit für den Start? Öffne bei Bedarf die Hilfe und beginne dann das Warm-up.</div>
+      </section>
+
+      <aside class="panel rocket-panel">
+        <div class="rocket-header">
+          <div>
+            <div class="stat-label">Raketenanzeige</div>
+            <div id="altitudeDisplay" class="stat-value">Flughöhe: 0 km</div>
+          </div>
+        </div>
+
+        <div class="rocket-stage">
+          <div class="zone-labels">
+            <span class="zone-label">Orbit erreicht</span>
+            <span class="zone-label">Weltall</span>
+            <span class="zone-label">Atmosphäre</span>
+            <span class="zone-label">Startphase</span>
+          </div>
+
+          <div id="rocket" class="rocket" aria-hidden="true">
+            <div class="rocket-body">
+              <div class="window"></div>
+            </div>
+            <div class="wing left"></div>
+            <div class="wing right"></div>
+            <div class="fire"></div>
+          </div>
+        </div>
+
+        <div id="bonusDisplay" class="bonus">Bonus: Eine richtige Aufgabe nach der anderen bringt die Rakete besonders schnell voran.</div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="helpModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal">
+      <div class="hero" style="margin-bottom: 12px;">
+        <div>
+          <h2 id="helpTitle">Hilfe zu den drei Gleichungstypen</h2>
+          <p style="margin: 0; color: #36517d;">Kurz, klar und passend für Klasse 10.</p>
+        </div>
+        <button id="closeHelpButton" class="secondary" style="color:#10213d; border-color:#cfe1ff; background:#e9f3ff;">Schließen</button>
+      </div>
+
+      <div class="help-card">
+        <h3>1. Form: x² + q = 0</h3>
+        <p>Stelle nach <strong>x²</strong> um: <strong>x² = -q</strong>. Ziehe dann die Wurzel. Es gilt also <strong>x = ±√(-q)</strong>. Das klappt nur, wenn <strong>-q</strong> nicht negativ ist und eine passende Quadratwurzel hat.</p>
+      </div>
+
+      <div class="help-card">
+        <h3>2. Form: x² + p x = 0</h3>
+        <p>Klammere <strong>x</strong> aus: <strong>x(x + p) = 0</strong>. Nutze dann die Nullproduktregel: Entweder <strong>x = 0</strong> oder <strong>x + p = 0</strong>, also <strong>x = -p</strong>.</p>
+      </div>
+
+      <div class="help-card">
+        <h3>3. Form: x² + p x + q = 0</h3>
+        <p>Suche zwei Zahlen, deren <strong>Summe p</strong> und deren <strong>Produkt q</strong> ist. Mit diesen Zahlen kann man die Gleichung in Faktoren zerlegen, zum Beispiel <strong>(x + a)(x + b) = 0</strong>.</p>
+      </div>
+
+      <div class="help-card">
+        <h3>Eingabe-Tipp</h3>
+        <p>Eine Lösung kannst du einfach als Zahl eingeben. Zwei Lösungen trennst du mit <strong>Semikolon</strong>, <strong>Komma</strong> oder <strong>Leerzeichen</strong>, zum Beispiel <strong>2; -3</strong>. Die Reihenfolge ist egal.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const timerDisplay = document.getElementById("timerDisplay");
+    const equationDisplay = document.getElementById("equationDisplay");
+    const solutionInput = document.getElementById("solutionInput");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const altitudeDisplay = document.getElementById("altitudeDisplay");
+    const correctDisplay = document.getElementById("correctDisplay");
+    const streakDisplay = document.getElementById("streakDisplay");
+    const phaseBadge = document.getElementById("phaseBadge");
+    const bonusDisplay = document.getElementById("bonusDisplay");
+    const taskPanel = document.getElementById("taskPanel");
+    const rocket = document.getElementById("rocket");
+
+    const startButton = document.getElementById("startButton");
+    const checkButton = document.getElementById("checkButton");
+    const nextButton = document.getElementById("nextButton");
+    const resetButton = document.getElementById("resetButton");
+    const helpButton = document.getElementById("helpButton");
+    const closeHelpButton = document.getElementById("closeHelpButton");
+    const helpModal = document.getElementById("helpModal");
+
+    const TOTAL_SECONDS = 5 * 60;
+    const altitudePerCorrect = 40;
+
+    const state = {
+      remainingSeconds: TOTAL_SECONDS,
+      timerId: null,
+      running: false,
+      started: false,
+      correctCount: 0,
+      streak: 0,
+      currentTask: null,
+      lastFeedbackWasCorrect: false,
+      typeCounts: [0, 0, 0]
+    };
+
+    function formatTerm(value, variableText, isFirst = false) {
+      if (value === 0) {
+        return isFirst ? "0" : "";
+      }
+
+      const sign = value > 0 ? (isFirst ? "" : " + ") : (isFirst ? "-" : " - ");
+      const absValue = Math.abs(value);
+      const coefficient = absValue === 1 ? "" : absValue;
+      return `${sign}${coefficient}${variableText}`;
+    }
+
+    function formatConstant(value) {
+      if (value === 0) {
+        return "";
+      }
+      return value > 0 ? ` + ${value}` : ` - ${Math.abs(value)}`;
+    }
+
+    function createEquationText(task) {
+      return `x²${formatTerm(task.p, "x")}${formatConstant(task.q)} = 0`;
+    }
+
+    function chooseBalancedType() {
+      const minimumCount = Math.min(...state.typeCounts);
+      const candidateIndices = state.typeCounts
+        .map((count, index) => ({ count, index }))
+        .filter((entry) => entry.count === minimumCount)
+        .map((entry) => entry.index);
+
+      return candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Erzeugt Aufgaben mit ganzzahligen reellen Lösungen für alle drei geforderten Typen.
+    function generateTask() {
+      const type = chooseBalancedType();
+      state.typeCounts[type] += 1;
+
+      if (type === 0) {
+        let r1 = 0;
+        let r2 = 0;
+        while (r1 === 0 || r2 === 0) {
+          r1 = randomInt(-9, 9);
+          r2 = randomInt(-9, 9);
+        }
+        return {
+          type,
+          p: -(r1 + r2),
+          q: r1 * r2,
+          solutions: [r1, r2].sort((a, b) => a - b)
+        };
+      }
+
+      if (type === 1) {
+        const root = randomInt(1, 10);
+        return {
+          type,
+          p: 0,
+          q: -(root * root),
+          solutions: [-root, root]
+        };
+      }
+
+      const nonZeroRoot = randomInt(-10, 10) || 4;
+      return {
+        type,
+        p: -nonZeroRoot,
+        q: 0,
+        solutions: [0, nonZeroRoot].sort((a, b) => a - b)
+      };
+    }
+
+    function setFeedback(message, kind) {
+      feedbackBox.textContent = message;
+      feedbackBox.className = `feedback ${kind}`;
+    }
+
+    function updateFlightDisplay() {
+      const altitude = state.correctCount * altitudePerCorrect + Math.max(0, state.streak - 1) * 10;
+      altitudeDisplay.textContent = `Flughöhe: ${altitude} km`;
+      correctDisplay.textContent = state.correctCount;
+      streakDisplay.textContent = state.streak;
+
+      let phase = "Startphase";
+      if (altitude >= 240) {
+        phase = "Orbit erreicht";
+      } else if (altitude >= 160) {
+        phase = "Weltall";
+      } else if (altitude >= 80) {
+        phase = "Atmosphäre";
+      }
+      phaseBadge.textContent = `🚀 ${phase}`;
+
+      const maxAltitude = 320;
+      const progress = Math.min(1, altitude / maxAltitude);
+      rocket.style.bottom = `${24 + progress * 390}px`;
+
+      if (state.streak >= 3) {
+        bonusDisplay.textContent = `Bonus aktiv: ${state.streak} richtige Lösungen in Folge. Starke Serie!`;
+      } else {
+        bonusDisplay.textContent = "Bonus: Eine richtige Aufgabe nach der anderen bringt die Rakete besonders schnell voran.";
+      }
+    }
+
+    function renderTask() {
+      state.currentTask = generateTask();
+      equationDisplay.textContent = createEquationText(state.currentTask);
+      solutionInput.value = "";
+      solutionInput.focus();
+    }
+
+    function normalizeNumber(value) {
+      return Number(value.replace(",", "."));
+    }
+
+    // Liest eine oder zwei eingegebene Lösungen robust aus und fängt typische Formfehler ab.
+    function parseUserInput(input) {
+      const cleaned = input.trim();
+      if (!cleaned) {
+        return { error: "Bitte gib mindestens eine Lösung ein." };
+      }
+
+      const tokens = cleaned
+        .split(/[;|\/]+|\s+/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+
+      if (tokens.length === 0 || tokens.length > 2) {
+        return { error: "Bitte gib eine oder zwei Zahlen ein, zum Beispiel 2; -3." };
+      }
+
+      const numbers = [];
+      for (const token of tokens) {
+        if (!/^[-+]?\d+(?:[\.,]\d+)?$/.test(token)) {
+          return { error: `„${token}“ ist keine gültige Zahl.` };
+        }
+        const numericValue = normalizeNumber(token);
+        if (!Number.isFinite(numericValue)) {
+          return { error: `„${token}“ konnte nicht gelesen werden.` };
+        }
+        numbers.push(numericValue);
+      }
+
+      return { values: numbers.sort((a, b) => a - b) };
+    }
+
+    function arraysMatch(a, b) {
+      if (a.length !== b.length) {
+        return false;
+      }
+      return a.every((value, index) => value === b[index]);
+    }
+
+    function revealSolutions(solutions) {
+      return solutions.length === 1 ? `${solutions[0]}` : `${solutions[0]}; ${solutions[1]}`;
+    }
+
+    // Prüft die Eingabe unabhängig von der Reihenfolge und erlaubt eine oder zwei Lösungen.
+    function checkSolution() {
+      if (!state.started) {
+        setFeedback("Bitte starte zuerst das Warm-up.", "info");
+        return;
+      }
+
+      if (!state.running) {
+        setFeedback("Die Zeit ist abgelaufen. Starte neu, um weiterzumachen.", "info");
+        return;
+      }
+
+      const parsed = parseUserInput(solutionInput.value);
+      if (parsed.error) {
+        setFeedback(parsed.error, "error");
+        return;
+      }
+
+      const expected = [...new Set(state.currentTask.solutions)].sort((a, b) => a - b);
+      const actual = [...new Set(parsed.values)].sort((a, b) => a - b);
+
+      if (arraysMatch(actual, expected)) {
+        state.correctCount += 1;
+        state.streak += 1;
+        state.lastFeedbackWasCorrect = true;
+        updateFlightDisplay();
+        setFeedback("Richtig! Die Rakete steigt weiter. Du kannst direkt die nächste Aufgabe lösen.", "success");
+      } else {
+        state.streak = 0;
+        state.lastFeedbackWasCorrect = false;
+        updateFlightDisplay();
+        setFeedback(`Noch nicht richtig. Die richtige Lösung ist: ${revealSolutions(expected)}. Probiere gleich die nächste Aufgabe!`, "error");
+      }
+    }
+
+    function updateTimer() {
+      const minutes = String(Math.floor(state.remainingSeconds / 60)).padStart(2, "0");
+      const seconds = String(state.remainingSeconds % 60).padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    function stopTimer() {
+      clearInterval(state.timerId);
+      state.timerId = null;
+      state.running = false;
+      taskPanel.classList.add("timer-ended");
+    }
+
+    function tick() {
+      if (state.remainingSeconds <= 0) {
+        stopTimer();
+        setFeedback(`Zeit vorbei! Du hast ${state.correctCount} Aufgaben richtig gelöst und ${altitudeDisplay.textContent.toLowerCase()} erreicht.`, "info");
+        return;
+      }
+      state.remainingSeconds -= 1;
+      updateTimer();
+      if (state.remainingSeconds <= 0) {
+        stopTimer();
+        setFeedback(`Zeit vorbei! Du hast ${state.correctCount} Aufgaben richtig gelöst und ${altitudeDisplay.textContent.toLowerCase()} erreicht.`, "info");
+      }
+    }
+
+    function startGame() {
+      if (state.running) {
+        setFeedback("Das Warm-up läuft bereits. Viel Erfolg!", "info");
+        return;
+      }
+
+      state.started = true;
+      state.running = true;
+      taskPanel.classList.remove("timer-ended");
+      if (!state.currentTask) {
+        renderTask();
+      }
+      setFeedback("Los geht's! Löse die Aufgabe und bring die Rakete nach oben.", "info");
+      updateTimer();
+      clearInterval(state.timerId);
+      state.timerId = setInterval(tick, 1000);
+    }
+
+    function resetGame() {
+      clearInterval(state.timerId);
+      state.remainingSeconds = TOTAL_SECONDS;
+      state.timerId = null;
+      state.running = false;
+      state.started = false;
+      state.correctCount = 0;
+      state.streak = 0;
+      state.currentTask = null;
+      state.lastFeedbackWasCorrect = false;
+      state.typeCounts = [0, 0, 0];
+      updateTimer();
+      updateFlightDisplay();
+      equationDisplay.textContent = "Klicke auf „Warm-up starten“.";
+      solutionInput.value = "";
+      taskPanel.classList.remove("timer-ended");
+      setFeedback("Alles zurückgesetzt. Wenn du bereit bist, starte das nächste Warm-up.", "info");
+    }
+
+    startButton.addEventListener("click", startGame);
+    checkButton.addEventListener("click", checkSolution);
+    nextButton.addEventListener("click", () => {
+      if (!state.started) {
+        setFeedback("Starte zuerst das Warm-up, damit Aufgaben erzeugt werden.", "info");
+        return;
+      }
+      renderTask();
+      if (state.lastFeedbackWasCorrect) {
+        setFeedback("Neue Aufgabe geladen. Weiter geht's!", "info");
+      } else {
+        setFeedback("Neue Aufgabe geladen. Jetzt klappt's bestimmt.", "info");
+      }
+    });
+    resetButton.addEventListener("click", resetGame);
+    solutionInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        checkSolution();
+      }
+    });
+
+    helpButton.addEventListener("click", () => helpModal.classList.add("open"));
+    closeHelpButton.addEventListener("click", () => helpModal.classList.remove("open"));
+    helpModal.addEventListener("click", (event) => {
+      if (event.target === helpModal) {
+        helpModal.classList.remove("open");
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        helpModal.classList.remove("open");
+      }
+    });
+
+    updateTimer();
+    updateFlightDisplay();
+  </script>
+</body>
+</html>
