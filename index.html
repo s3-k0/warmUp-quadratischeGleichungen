@@ -85,6 +85,7 @@
       display: grid;
       grid-template-columns: minmax(320px, 1.15fr) minmax(260px, 0.85fr);
       gap: 22px;
+      align-items: start;
     }
 
     .panel {
@@ -211,6 +212,12 @@
     .primary { background: linear-gradient(135deg, #7ee787, #22c55e); color: #06210d; }
     .secondary { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid rgba(255,255,255,0.12); }
     .ghost { background: rgba(96, 165, 250, 0.16); color: #dcecff; }
+
+    .top-actions button,
+    .button-row button {
+      min-height: 56px;
+      touch-action: manipulation;
+    }
 
     .feedback {
       min-height: 58px;
@@ -412,18 +419,117 @@
       pointer-events: none;
     }
 
+    @media (max-width: 1180px) {
+      .app {
+        width: min(100% - 28px, 980px);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .rocket-panel {
+        min-height: unset;
+      }
+
+      .rocket-stage {
+        height: 380px;
+      }
+
+      .zone-labels {
+        width: auto;
+        left: 16px;
+        right: 16px;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+      }
+
+      .zone-label {
+        align-self: auto;
+      }
+    }
+
+    @media (min-width: 700px) and (max-width: 1180px) {
+      .hero {
+        align-items: stretch;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .top-actions button {
+        flex: 1 1 0;
+      }
+
+      .task-panel,
+      .rocket-panel {
+        padding: 28px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .equation {
+        font-size: clamp(2.4rem, 5vw, 3.6rem);
+      }
+
+      .input-row,
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      input[type="text"] {
+        min-height: 68px;
+        font-size: 1.25rem;
+      }
+
+      .button-row button {
+        width: 100%;
+        font-size: 1.1rem;
+      }
+
+      .rocket-header {
+        margin-bottom: 18px;
+      }
+
+      .rocket-stage {
+        height: 420px;
+      }
+    }
+
     @media (max-width: 930px) {
-      .layout { grid-template-columns: 1fr; }
-      .rocket-panel { min-height: 560px; }
-      .rocket-stage { height: 420px; }
+      .hero {
+        flex-direction: column;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      .rocket-stage { height: 360px; }
     }
 
     @media (max-width: 640px) {
       .app { width: min(100% - 20px, 100%); padding-top: 18px; }
-      .hero { flex-direction: column; }
-      .top-actions { justify-content: flex-start; }
       .task-panel, .rocket-panel { padding: 18px; }
       .equation { font-size: 2.2rem; }
+      .top-actions,
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      .top-actions button,
+      .button-row button,
+      input[type="text"] {
+        width: 100%;
+      }
+      .zone-labels {
+        display: none;
+      }
     }
   </style>
 </head>
